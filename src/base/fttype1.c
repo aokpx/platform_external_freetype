@@ -28,7 +28,7 @@
   FT_Get_PS_Font_Info( FT_Face          face,
                        PS_FontInfoRec*  afont_info )
   {
-    FT_Error  error = FT_Err_Invalid_Argument;
+    FT_Error  error = FT_ERR( Invalid_Argument );
 
 
     if ( face )
@@ -73,7 +73,7 @@
   FT_Get_PS_Font_Private( FT_Face         face,
                           PS_PrivateRec*  afont_private )
   {
-    FT_Error  error = FT_Err_Invalid_Argument;
+    FT_Error  error = FT_ERR( Invalid_Argument );
 
 
     if ( face )
@@ -90,25 +90,31 @@
     return error;
   }
 
-/* documentation is in t1tables.h */
-FT_EXPORT_DEF( FT_Long )
-FT_Get_PS_Font_Value( FT_Face       face,
-                      PS_Dict_Keys  key,
-                      FT_UInt       idx,
-                      void         *value,
-                      FT_Long       value_len )
-{
-  FT_Int             result  = 0;
-  FT_Service_PsInfo  service = NULL;
 
-  if ( face )
+  /* documentation is in t1tables.h */
+
+  FT_EXPORT_DEF( FT_Long )
+  FT_Get_PS_Font_Value( FT_Face       face,
+                        PS_Dict_Keys  key,
+                        FT_UInt       idx,
+                        void         *value,
+                        FT_Long       value_len )
   {
-    FT_FACE_FIND_SERVICE( face, service, POSTSCRIPT_INFO );
+    FT_Int             result  = 0;
+    FT_Service_PsInfo  service = NULL;
+
+
+    if ( face )
+    {
+      FT_FACE_FIND_SERVICE( face, service, POSTSCRIPT_INFO );
+
       if ( service && service->ps_get_font_value )
-      result = service->ps_get_font_value( face, key, idx,
-                                           value, value_len );
+        result = service->ps_get_font_value( face, key, idx,
+                                             value, value_len );
+    }
+
+    return result;
   }
-  return result;
-}
+
 
 /* END */
